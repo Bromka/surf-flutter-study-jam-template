@@ -10,12 +10,12 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform(
-      androidKey: 'enter android key here',
-      iosKey: 'enter ios key here',
-      webKey: 'enter web key here',
+      androidKey: 'AIzaSyCXU5f25S_SUeVv7cAzoeF373kHk4Hv2dE',
+      iosKey: 'AIzaSyAjvNoe31ZMSakjKFOkhbrZBsj3RyW6plo',
+      webKey: 'AIzaSyD40PR_fizjSYtCZEtXgwq_5LdJu2w2zIs',
     ),
   );
-  
+
   runApp(const MyApp());
 }
 
@@ -25,7 +25,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatRepository = ChatRepositoryFirebase(FirebaseFirestore.instance);
-
+    //todo remove before merge
+    chatRepository.messages.then((messages) {
+      print(messages.length);
+      print('isMessages complete');
+    });
     return MaterialApp(
       theme: ThemeData(
         colorSchemeSeed: Colors.deepPurple,
