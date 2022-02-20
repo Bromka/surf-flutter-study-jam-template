@@ -40,7 +40,9 @@ class ChatItem extends StatelessWidget {
                           child: CircleAvatar(
                             backgroundColor: Color(0xFF6f43bf),
                             child: Text(
-                              chatElementData.author.name.toString()[0],
+                              chatElementData.author.name
+                                  .toString()[0]
+                                  .toUpperCase(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),

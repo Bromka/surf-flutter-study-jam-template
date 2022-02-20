@@ -67,76 +67,84 @@ class _ChatScreenState extends State<ChatScreen> {
             )
           ],
         ),
-        body: FutureBuilder<List>(
-            future: widget.messages,
-            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                    reverse: true,
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ChatItem(
-                        userName: _userNameController.text,
-                        chatElementData: snapshot.data?[index],
-                      );
-                    });
-              } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                      child: SizedBox(
-                        child: CircularProgressIndicator(
-                          value: null,
-                          strokeWidth: 7.0,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 25.0),
-                      child: Center(
-                        child: Text(
-                          "loading.. wait...",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              }
-            }),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
+        body: SafeArea(
+          child: Column(
+            children: [
               Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: TextField(
-                    onChanged: (val) => {saveUserName(val)},
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Сообщение',
-                    ),
-                    maxLines: 1,
-                  ),
-                ),
+                child: FutureBuilder<List>(
+                    future: widget.messages,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            reverse: true,
+                            itemCount: snapshot.data?.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ChatItem(
+                                userName: _userNameController.text,
+                                chatElementData: snapshot.data?[index],
+                              );
+                            });
+                      } else {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(
+                              child: SizedBox(
+                                child: CircularProgressIndicator(
+                                  value: null,
+                                  strokeWidth: 7.0,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 25.0),
+                              child: Center(
+                                child: Text(
+                                  "loading.. wait...",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
               ),
-              IconButton(
-                disabledColor: Colors.grey,
-                icon: const Icon(Icons.send),
-                onPressed: _messageController.text.length == 0
-                    ? null
-                    : () {
-                        sendMessage();
-                      },
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: TextField(
+                        onChanged: (val) => {saveUserName(val)},
+                        controller: _messageController,
+                        decoration: InputDecoration(
+                          hintText: 'Сообщение',
+                        ),
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    disabledColor: Colors.grey,
+                    icon: const Icon(Icons.send),
+                    onPressed: _messageController.text.length == 0
+                        ? null
+                        : () {
+                            sendMessage();
+                          },
+                  ),
+                ],
               ),
             ],
           ),
         ));
+
     throw UnimplementedError();
   }
 
