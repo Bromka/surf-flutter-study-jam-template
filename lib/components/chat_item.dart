@@ -24,32 +24,64 @@ class ChatItem extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Align(
       alignment: isMyMessage() ? Alignment.centerLeft : Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          child: SizedBox(
-              width: width * 0.7,
-              height: height / 12,
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Color(0xFF6f43bf),
-                    child: Text(chatElementData.author.toString()[0]),
+      child: SizedBox(
+          width: width * 0.7,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: CircleAvatar(
+                            backgroundColor: Color(0xFF6f43bf),
+                            child: Text(
+                              chatElementData.author.name.toString()[0],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                chatElementData.author.name.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                chatElementData.message.toString(),
+                              )
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
                   ),
-                  Expanded(
-                      child: Column(
-                    children: [
-                      Text(chatElementData.author.toString()),
-                      Text(chatElementData.message.toString())
-                    ],
-                  ))
-                ],
-              )
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    chatElementData.createdDateTime.toLocal().toString(),
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                  ),
+                )
+              ],
+            ),
+          )
 
-              // Text(chatElementData.message),
-              ),
-        ),
-      ),
+          // Text(chatElementData.message),
+          ),
     );
 
     // Container(
