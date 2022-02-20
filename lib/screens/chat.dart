@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
@@ -10,9 +11,10 @@ class ChatScreen extends StatefulWidget {
   final ChatRepository chatRepository;
   final String userName = 'DefaultName';
   final String? message = null;
-  final bool _isSendButtonDisabled = true;
+  Future<List<dynamic>>? messages = null;
+  bool _isSendButtonDisabled = true;
 
-  const ChatScreen({
+  ChatScreen({
     Key? key,
     required this.chatRepository,
   }) : super(key: key);
@@ -41,17 +43,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // widget.chatRepository.messages
-    //     .then((messages) => messages.forEach((message) {
-    //           print(message);
-    //         }));
-    // TODO(task): Use ChatRepository to implement the chat.
-    print('hello world');
-
-    final Future<List<dynamic>> messages = widget.chatRepository.messages;
+    loadMessages();
     return Scaffold(
         appBar: AppBar(
           title: TextField(
+            onChanged: (val) => {validateButton()},
             controller: _userNameController,
             decoration: InputDecoration(
               hintText: 'Введите ник',
@@ -63,17 +59,17 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: const Icon(Icons.refresh),
               tooltip: 'Обновить чат',
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('This is a snackbar')));
+                loadMessages();
               },
             )
           ],
         ),
         body: FutureBuilder<List>(
-            future: messages,
+            future: widget.messages,
             builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
+                    reverse: true,
                     itemCount: snapshot.data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ChatItem(
@@ -116,6 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    onChanged: (val) => {validateButton()},
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Сообщение',
@@ -127,7 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
               IconButton(
                 disabledColor: Colors.grey,
                 icon: const Icon(Icons.send),
-                onPressed: widget._isSendButtonDisabled
+                onPressed: _messageController.text.length == 0
                     ? null
                     : () {
                         sendMessage();
@@ -139,10 +136,29 @@ class _ChatScreenState extends State<ChatScreen> {
     throw UnimplementedError();
   }
 
-  sendMessage() {
-    print('something');
+  sendMessage() async {
+    final data = await widget.chatRepository
+        .sendMessage(_userNameController.text, _messageController.text);
+    print(data);
+    // loadMessages();
+  }
 
-    print(_messageController.text);
-    print(_userNameController.text);
+  loadMessages() async {
+    setState(() {
+      widget.messages = widget.chatRepository.messages;
+    });
+  }
+
+  validateButton() {
+    if (_messageController.text.isNotEmpty &&
+        _userNameController.text.isNotEmpty) {
+      setState(() {
+        widget._isSendButtonDisabled = false;
+      });
+    } else {
+      setState(() {
+        widget._isSendButtonDisabled = true;
+      });
+    }
   }
 }
