@@ -26,10 +26,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final chatRepository = ChatRepositoryFirebase(FirebaseFirestore.instance);
     //todo remove before merge
-    chatRepository.messages.then((messages) {
-      print(messages.length);
-      print('isMessages complete');
-    });
     return MaterialApp(
       theme: ThemeData(
         colorSchemeSeed: Colors.deepPurple,

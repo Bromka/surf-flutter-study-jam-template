@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surf_practice_chat_flutter/components/chat_item.dart';
 
 import 'package:surf_practice_chat_flutter/data/chat/repository/repository.dart';
@@ -30,6 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+
     _userNameController = TextEditingController();
     _messageController = TextEditingController();
   }
@@ -44,6 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     loadMessages();
+
     return Scaffold(
         appBar: AppBar(
           title: TextField(
@@ -73,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: snapshot.data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ChatItem(
+                        userName: _userNameController.text,
                         chatElementData: snapshot.data?[index],
                       );
                     });
@@ -112,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
-                    onChanged: (val) => {validateButton()},
+                    onChanged: (val) => {saveUserName(val)},
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Сообщение',
@@ -147,6 +151,17 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       widget.messages = widget.chatRepository.messages;
     });
+  }
+
+  saveUserName(val) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', val);
+    validateButton();
+  }
+
+  loadUserName(val) async {
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('username'));
   }
 
   validateButton() {
