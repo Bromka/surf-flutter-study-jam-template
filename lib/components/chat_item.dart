@@ -10,7 +10,8 @@ class ChatItem extends StatelessWidget {
   }) : super(key: key);
 
   bool isMyMessage() {
-    if (this.userName == this.chatElementData.author) {
+    if (this.userName == this.chatElementData.author.name) {
+      print('asdasdasdasdasdas');
       return true;
     }
     return false;
@@ -18,10 +19,12 @@ class ChatItem extends StatelessWidget {
 
   final ChatMessageDto chatElementData;
   final String? userName;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return Align(
       alignment: isMyMessage() ? Alignment.centerLeft : Alignment.centerRight,
       child: SizedBox(
@@ -31,6 +34,13 @@ class ChatItem extends StatelessWidget {
             child: Column(
               children: [
                 Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  elevation: 5,
+                  color: isMyMessage()
+                      ? Color.fromARGB(198, 41, 181, 236)
+                      : Color.fromARGB(198, 159, 223, 248),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
